@@ -1,12 +1,11 @@
-import { client } from '@/lib/sanity/client'
-import { allIndicatorsQuery, } from '@/lib/sanity/queries/indicators'
+import { sanityFetch } from '@/lib/sanity/client'
+import { allIndicatorsQuery } from '@/lib/sanity/queries/indicators'
 import { regionsQuery } from '@/lib/sanity/queries/settings'
 import IndicatorPanel from '@/components/IndicatorPanel'
 import type { Indicator, HimalayaRegion } from '@/lib/types'
 import type { Metadata } from 'next'
 
 export const revalidate = 86400
-
 export const metadata: Metadata = { title: 'The Himalaya' }
 
 const TOURISM_PRESSURE_DATA = [
@@ -28,8 +27,8 @@ const REGIONAL_FOCUS = [
 
 async function getData() {
   const [indicators, regions] = await Promise.all([
-    client.fetch<Indicator[]>(allIndicatorsQuery, {}, { next: { revalidate: 86400 } }),
-    client.fetch<HimalayaRegion[]>(regionsQuery, {}, { next: { revalidate: 86400 } }),
+    sanityFetch<Indicator[]>(allIndicatorsQuery, {}, { next: { revalidate: 86400 } }),
+    sanityFetch<HimalayaRegion[]>(regionsQuery, {}, { next: { revalidate: 86400 } }),
   ])
   return { indicators: indicators ?? [], regions: regions ?? [] }
 }
@@ -40,47 +39,15 @@ export default async function TheHimalayaPage() {
   return (
     <div style={{ backgroundColor: 'var(--color-bg)' }}>
       {/* Header */}
-      <div
-        style={{
-          borderBottom: '1px solid var(--color-border)',
-          padding: 'clamp(40px, 6vw, 72px) clamp(20px, 4vw, 48px)',
-        }}
-      >
+      <div style={{ borderBottom: '1px solid var(--color-border)', padding: 'clamp(40px, 6vw, 72px) clamp(20px, 4vw, 48px)' }}>
         <div style={{ maxWidth: 'var(--space-wide-max)', margin: '0 auto' }}>
-          <p
-            style={{
-              fontSize: 'var(--font-size-caption)',
-              letterSpacing: '0.12em',
-              textTransform: 'uppercase',
-              color: 'var(--color-accent)',
-              fontWeight: 600,
-              fontFamily: 'var(--font-base)',
-              marginBottom: '12px',
-            }}
-          >
+          <p style={{ fontSize: 'var(--font-size-caption)', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--color-accent)', fontWeight: 600, fontFamily: 'var(--font-base)', marginBottom: '12px' }}>
             Field Context
           </p>
-          <h1
-            style={{
-              fontSize: 'clamp(28px, 4vw, 44px)',
-              fontFamily: 'var(--font-base)',
-              fontWeight: 700,
-              color: 'var(--color-text)',
-              marginBottom: '20px',
-            }}
-          >
+          <h1 style={{ fontSize: 'clamp(28px, 4vw, 44px)', fontFamily: 'var(--font-base)', fontWeight: 700, color: 'var(--color-text)', marginBottom: '20px' }}>
             The Himalaya
           </h1>
-          <p
-            style={{
-              fontSize: '19px',
-              fontFamily: 'var(--font-base)',
-              color: 'var(--color-text-muted)',
-              lineHeight: 1.8,
-              maxWidth: '640px',
-              margin: 0,
-            }}
-          >
+          <p style={{ fontSize: '19px', fontFamily: 'var(--font-base)', color: 'var(--color-text-muted)', lineHeight: 1.8, maxWidth: '640px', margin: 0 }}>
             Himal Niti works across the Indian Himalayan range — from Himachal Pradesh and
             Ladakh to Uttarakhand and Sikkim. The data below tracks ecosystem and economic
             indicators across active research zones. Updated every 24 hours.
@@ -89,23 +56,9 @@ export default async function TheHimalayaPage() {
       </div>
 
       {/* Ecosystem indicators */}
-      <section
-        style={{
-          padding: 'var(--space-section) clamp(20px, 4vw, 48px)',
-        }}
-      >
+      <section style={{ padding: 'var(--space-section) clamp(20px, 4vw, 48px)' }}>
         <div style={{ maxWidth: 'var(--space-wide-max)', margin: '0 auto' }}>
-          <p
-            style={{
-              fontSize: 'var(--font-size-caption)',
-              letterSpacing: '0.1em',
-              textTransform: 'uppercase',
-              color: 'var(--color-text-muted)',
-              fontWeight: 600,
-              fontFamily: 'var(--font-base)',
-              marginBottom: '24px',
-            }}
-          >
+          <p style={{ fontSize: 'var(--font-size-caption)', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--color-text-muted)', fontWeight: 600, fontFamily: 'var(--font-base)', marginBottom: '24px' }}>
             Ecosystem &amp; Economic Indicators
           </p>
           {indicators.length > 0 ? (
@@ -119,96 +72,24 @@ export default async function TheHimalayaPage() {
       </section>
 
       {/* Tourism pressure */}
-      <section
-        style={{
-          padding: 'var(--space-section) clamp(20px, 4vw, 48px)',
-          backgroundColor: 'var(--color-bg-alt)',
-          borderTop: '1px solid var(--color-border)',
-          borderBottom: '1px solid var(--color-border)',
-        }}
-      >
+      <section style={{ padding: 'var(--space-section) clamp(20px, 4vw, 48px)', backgroundColor: 'var(--color-bg-alt)', borderTop: '1px solid var(--color-border)', borderBottom: '1px solid var(--color-border)' }}>
         <div style={{ maxWidth: 'var(--space-wide-max)', margin: '0 auto' }}>
-          <p
-            style={{
-              fontSize: 'var(--font-size-caption)',
-              letterSpacing: '0.1em',
-              textTransform: 'uppercase',
-              color: 'var(--color-text-muted)',
-              fontWeight: 600,
-              fontFamily: 'var(--font-base)',
-              marginBottom: '24px',
-            }}
-          >
+          <p style={{ fontSize: 'var(--font-size-caption)', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--color-text-muted)', fontWeight: 600, fontFamily: 'var(--font-base)', marginBottom: '24px' }}>
             Tourism Pressure Data
           </p>
-
-          <div
-            style={{
-              border: '1px solid var(--color-border)',
-              borderRadius: 'var(--radius-card)',
-              overflow: 'hidden',
-              backgroundColor: 'var(--color-bg)',
-            }}
-          >
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: '1.5fr 1.5fr 1fr 1fr 2fr',
-                gap: 0,
-                backgroundColor: 'var(--color-bg-alt)',
-                borderBottom: '1px solid var(--color-border)',
-                padding: '12px 16px',
-              }}
-            >
+          <div style={{ border: '1px solid var(--color-border)', borderRadius: 'var(--radius-card)', overflow: 'hidden', backgroundColor: 'var(--color-bg)' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.5fr 1fr 1fr 2fr', backgroundColor: 'var(--color-bg-alt)', borderBottom: '1px solid var(--color-border)', padding: '12px 16px' }}>
               {['Region', 'Metric', 'Value', 'Trend', 'Note'].map((h) => (
-                <span
-                  key={h}
-                  style={{
-                    fontSize: '11px',
-                    fontFamily: 'var(--font-base)',
-                    fontWeight: 600,
-                    letterSpacing: '0.08em',
-                    textTransform: 'uppercase',
-                    color: 'var(--color-text-muted)',
-                  }}
-                >
-                  {h}
-                </span>
+                <span key={h} style={{ fontSize: '11px', fontFamily: 'var(--font-base)', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--color-text-muted)' }}>{h}</span>
               ))}
             </div>
             {TOURISM_PRESSURE_DATA.map((row, i) => (
-              <div
-                key={i}
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: '1.5fr 1.5fr 1fr 1fr 2fr',
-                  gap: 0,
-                  padding: '14px 16px',
-                  borderBottom: i < TOURISM_PRESSURE_DATA.length - 1 ? '1px solid var(--color-border)' : 'none',
-                  alignItems: 'start',
-                }}
-              >
-                <span style={{ fontSize: '14px', fontFamily: 'var(--font-base)', color: 'var(--color-text)', fontWeight: 500 }}>
-                  {row.region}
-                </span>
-                <span style={{ fontSize: '14px', fontFamily: 'var(--font-base)', color: 'var(--color-text-muted)' }}>
-                  {row.metric}
-                </span>
-                <span style={{ fontSize: '14px', fontFamily: 'var(--font-base)', color: 'var(--color-text)', fontWeight: 600 }}>
-                  {row.value}
-                </span>
-                <span
-                  style={{
-                    fontSize: '13px',
-                    fontFamily: 'var(--font-base)',
-                    color: row.trend === 'Rising' ? '#C0392B' : row.trend === 'Stable' ? 'var(--color-text-muted)' : 'var(--color-green)',
-                  }}
-                >
-                  {row.trend}
-                </span>
-                <span style={{ fontSize: '13px', fontFamily: 'var(--font-base)', color: 'var(--color-text-muted)' }}>
-                  {row.note}
-                </span>
+              <div key={i} style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.5fr 1fr 1fr 2fr', padding: '14px 16px', borderBottom: i < TOURISM_PRESSURE_DATA.length - 1 ? '1px solid var(--color-border)' : 'none', alignItems: 'start' }}>
+                <span style={{ fontSize: '14px', fontFamily: 'var(--font-base)', color: 'var(--color-text)', fontWeight: 500 }}>{row.region}</span>
+                <span style={{ fontSize: '14px', fontFamily: 'var(--font-base)', color: 'var(--color-text-muted)' }}>{row.metric}</span>
+                <span style={{ fontSize: '14px', fontFamily: 'var(--font-base)', color: 'var(--color-text)', fontWeight: 600 }}>{row.value}</span>
+                <span style={{ fontSize: '13px', fontFamily: 'var(--font-base)', color: row.trend === 'Rising' ? '#C0392B' : row.trend === 'Stable' ? 'var(--color-text-muted)' : 'var(--color-green)' }}>{row.trend}</span>
+                <span style={{ fontSize: '13px', fontFamily: 'var(--font-base)', color: 'var(--color-text-muted)' }}>{row.note}</span>
               </div>
             ))}
           </div>
@@ -216,158 +97,26 @@ export default async function TheHimalayaPage() {
       </section>
 
       {/* Regional focus */}
-      <section
-        style={{ padding: 'var(--space-section) clamp(20px, 4vw, 48px)' }}
-      >
+      <section style={{ padding: 'var(--space-section) clamp(20px, 4vw, 48px)' }}>
         <div style={{ maxWidth: 'var(--space-wide-max)', margin: '0 auto' }}>
-          <p
-            style={{
-              fontSize: 'var(--font-size-caption)',
-              letterSpacing: '0.1em',
-              textTransform: 'uppercase',
-              color: 'var(--color-text-muted)',
-              fontWeight: 600,
-              fontFamily: 'var(--font-base)',
-              marginBottom: '24px',
-            }}
-          >
+          <p style={{ fontSize: 'var(--font-size-caption)', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--color-text-muted)', fontWeight: 600, fontFamily: 'var(--font-base)', marginBottom: '24px' }}>
             Regional Focus
           </p>
-          {regions.length > 0 ? (
-            <div
-              style={{
-                border: '1px solid var(--color-border)',
-                borderRadius: 'var(--radius-card)',
-                overflow: 'hidden',
-                backgroundColor: 'var(--color-bg)',
-              }}
-            >
-              <div
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: '1.5fr 1fr 1fr 2fr',
-                  padding: '12px 16px',
-                  backgroundColor: 'var(--color-bg-alt)',
-                  borderBottom: '1px solid var(--color-border)',
-                }}
-              >
-                {['Region', 'State', 'Phase', 'Key Issue'].map((h) => (
-                  <span
-                    key={h}
-                    style={{
-                      fontSize: '11px',
-                      fontFamily: 'var(--font-base)',
-                      fontWeight: 600,
-                      letterSpacing: '0.08em',
-                      textTransform: 'uppercase',
-                      color: 'var(--color-text-muted)',
-                    }}
-                  >
-                    {h}
-                  </span>
-                ))}
-              </div>
-              {regions.map((region, i) => (
-                <div
-                  key={region._id}
-                  style={{
-                    display: 'grid',
-                    gridTemplateColumns: '1.5fr 1fr 1fr 2fr',
-                    padding: '14px 16px',
-                    borderBottom: i < regions.length - 1 ? '1px solid var(--color-border)' : 'none',
-                    alignItems: 'start',
-                  }}
-                >
-                  <span style={{ fontSize: '14px', fontFamily: 'var(--font-base)', color: 'var(--color-text)', fontWeight: 500 }}>
-                    {region.name}
-                  </span>
-                  <span style={{ fontSize: '14px', fontFamily: 'var(--font-base)', color: 'var(--color-text-muted)' }}>
-                    {region.state}
-                  </span>
-                  <span
-                    style={{
-                      fontSize: '13px',
-                      fontFamily: 'var(--font-base)',
-                      color: region.phase === 'phase-1' ? 'var(--color-green)' : 'var(--color-text-muted)',
-                      fontWeight: 500,
-                    }}
-                  >
-                    {region.phase === 'phase-1' ? 'Active' : 'Planned'}
-                  </span>
-                  <span style={{ fontSize: '13px', fontFamily: 'var(--font-base)', color: 'var(--color-text-muted)', lineHeight: 1.6 }}>
-                    —
-                  </span>
-                </div>
+          <div style={{ border: '1px solid var(--color-border)', borderRadius: 'var(--radius-card)', overflow: 'hidden', backgroundColor: 'var(--color-bg)' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr 1fr 2fr', padding: '12px 16px', backgroundColor: 'var(--color-bg-alt)', borderBottom: '1px solid var(--color-border)' }}>
+              {['Region', 'State', 'Phase', 'Key Issue'].map((h) => (
+                <span key={h} style={{ fontSize: '11px', fontFamily: 'var(--font-base)', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--color-text-muted)' }}>{h}</span>
               ))}
             </div>
-          ) : (
-            <div
-              style={{
-                border: '1px solid var(--color-border)',
-                borderRadius: 'var(--radius-card)',
-                overflow: 'hidden',
-                backgroundColor: 'var(--color-bg)',
-              }}
-            >
-              <div
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: '1.5fr 1fr 1fr 2fr',
-                  padding: '12px 16px',
-                  backgroundColor: 'var(--color-bg-alt)',
-                  borderBottom: '1px solid var(--color-border)',
-                }}
-              >
-                {['Region', 'State', 'Phase', 'Key Issue'].map((h) => (
-                  <span
-                    key={h}
-                    style={{
-                      fontSize: '11px',
-                      fontFamily: 'var(--font-base)',
-                      fontWeight: 600,
-                      letterSpacing: '0.08em',
-                      textTransform: 'uppercase',
-                      color: 'var(--color-text-muted)',
-                    }}
-                  >
-                    {h}
-                  </span>
-                ))}
+            {(regions.length > 0 ? regions.map((r, i) => ({ region: r.name, state: r.state, phase: r.phase === 'phase-1' ? 'Phase 1 — Active' : 'Phase 2 — Planned', keyIssue: '—', isActive: r.phase === 'phase-1', id: r._id, last: i === regions.length - 1 })) : REGIONAL_FOCUS.map((r, i) => ({ ...r, isActive: r.phase.includes('Active'), id: String(i), last: i === REGIONAL_FOCUS.length - 1 }))).map((row) => (
+              <div key={row.id} style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr 1fr 2fr', padding: '14px 16px', borderBottom: row.last ? 'none' : '1px solid var(--color-border)', alignItems: 'start' }}>
+                <span style={{ fontSize: '14px', fontFamily: 'var(--font-base)', color: 'var(--color-text)', fontWeight: 500 }}>{row.region}</span>
+                <span style={{ fontSize: '14px', fontFamily: 'var(--font-base)', color: 'var(--color-text-muted)' }}>{row.state}</span>
+                <span style={{ fontSize: '13px', fontFamily: 'var(--font-base)', color: row.isActive ? 'var(--color-green)' : 'var(--color-text-muted)', fontWeight: 500 }}>{row.phase}</span>
+                <span style={{ fontSize: '13px', fontFamily: 'var(--font-base)', color: 'var(--color-text-muted)', lineHeight: 1.6 }}>{row.keyIssue}</span>
               </div>
-              {REGIONAL_FOCUS.map((row, i) => (
-                <div
-                  key={i}
-                  style={{
-                    display: 'grid',
-                    gridTemplateColumns: '1.5fr 1fr 1fr 2fr',
-                    padding: '14px 16px',
-                    borderBottom: i < REGIONAL_FOCUS.length - 1 ? '1px solid var(--color-border)' : 'none',
-                    alignItems: 'start',
-                  }}
-                >
-                  <span style={{ fontSize: '14px', fontFamily: 'var(--font-base)', color: 'var(--color-text)', fontWeight: 500 }}>
-                    {row.region}
-                  </span>
-                  <span style={{ fontSize: '14px', fontFamily: 'var(--font-base)', color: 'var(--color-text-muted)' }}>
-                    {row.state}
-                  </span>
-                  <span
-                    style={{
-                      fontSize: '13px',
-                      fontFamily: 'var(--font-base)',
-                      color: row.phase.includes('Active') ? 'var(--color-green)' : 'var(--color-text-muted)',
-                      fontWeight: 500,
-                    }}
-                  >
-                    {row.phase}
-                  </span>
-                  <span style={{ fontSize: '13px', fontFamily: 'var(--font-base)', color: 'var(--color-text-muted)', lineHeight: 1.6 }}>
-                    {row.keyIssue}
-                  </span>
-                </div>
-              ))}
-            </div>
-          )}
+            ))}
+          </div>
         </div>
       </section>
     </div>

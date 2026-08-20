@@ -75,11 +75,11 @@ export default function Nav() {
                   transition: 'color var(--transition-base)',
                   whiteSpace: 'nowrap',
                 }}
-                onMouseEnter={(e) => {
-                  if (!active) (e.currentTarget as HTMLElement).style.color = 'var(--color-accent)'
+                onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => {
+                  if (!active) e.currentTarget.style.color = 'var(--color-accent)'
                 }}
-                onMouseLeave={(e) => {
-                  if (!active) (e.currentTarget as HTMLElement).style.color = '#E2EAF0'
+                onMouseLeave={(e: React.MouseEvent<HTMLAnchorElement>) => {
+                  if (!active) e.currentTarget.style.color = '#E2EAF0'
                 }}
               >
                 {link.label}

@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { client } from '@/lib/sanity/client'
+import { sanityFetch } from '@/lib/sanity/client'
 import { researchBySlugQuery, relatedResearchQuery } from '@/lib/sanity/queries/research'
 import ResearchCard from '@/components/ResearchCard'
 import type { ResearchDetail, ResearchCard as ResearchCardType } from '@/lib/types'
@@ -21,12 +21,9 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>
 }): Promise<Metadata> {
   const { slug } = await params
-  const item = await client.fetch<ResearchDetail | null>(researchBySlugQuery, { slug })
+  const item = await sanityFetch<ResearchDetail | null>(researchBySlugQuery, { slug })
   if (!item) return { title: 'Not Found' }
-  return {
-    title: item.title,
-    description: item.abstract,
-  }
+  return { title: item.title, description: item.abstract }
 }
 
 export default async function ResearchDetailPage({
@@ -35,19 +32,12 @@ export default async function ResearchDetailPage({
   params: Promise<{ slug: string }>
 }) {
   const { slug } = await params
-  const item = await client.fetch<ResearchDetail | null>(
-    researchBySlugQuery,
-    { slug },
-    { cache: 'no-store' }
-  )
+  const [item, related] = await Promise.all([
+    sanityFetch<ResearchDetail | null>(researchBySlugQuery, { slug }, { cache: 'no-store' }),
+    sanityFetch<ResearchCardType[]>(relatedResearchQuery, { slug, category: '' }, { next: { revalidate: 3600 } }),
+  ])
 
   if (!item) notFound()
-
-  const related = await client.fetch<ResearchCardType[]>(
-    relatedResearchQuery,
-    { slug, category: item.category },
-    { next: { revalidate: 3600 } }
-  )
 
   return (
     <div style={{ backgroundColor: 'var(--color-bg)' }}>
@@ -90,12 +80,7 @@ export default async function ResearchDetailPage({
               </span>
             )}
             {item.region && (
-              <span
-                style={{
-                  fontSize: 'var(--font-size-caption)',
-                  color: 'var(--color-text-muted)',
-                }}
-              >
+              <span style={{ fontSize: 'var(--font-size-caption)', color: 'var(--color-text-muted)' }}>
                 {item.region.name}{item.region.state ? `, ${item.region.state}` : ''}
               </span>
             )}
@@ -114,14 +99,7 @@ export default async function ResearchDetailPage({
             {item.title}
           </h1>
 
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '24px',
-              flexWrap: 'wrap',
-            }}
-          >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '24px', flexWrap: 'wrap' }}>
             {item.authors && item.authors.length > 0 && (
               <p style={{ fontSize: '14px', color: 'var(--color-text-muted)', margin: 0 }}>
                 {item.authors.join(', ')}
@@ -130,9 +108,7 @@ export default async function ResearchDetailPage({
             {item.publishedAt && (
               <p style={{ fontSize: '14px', color: 'var(--color-text-muted)', margin: 0 }}>
                 {new Date(item.publishedAt).toLocaleDateString('en-IN', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
+                  year: 'numeric', month: 'long', day: 'numeric',
                 })}
               </p>
             )}
@@ -199,14 +175,7 @@ export default async function ResearchDetailPage({
                     lineHeight: 1.6,
                   }}
                 >
-                  <span
-                    style={{
-                      color: 'var(--color-green)',
-                      fontWeight: 700,
-                      flexShrink: 0,
-                      marginTop: '1px',
-                    }}
-                  >
+                  <span style={{ color: 'var(--color-green)', fontWeight: 700, flexShrink: 0, marginTop: '1px' }}>
                     {i + 1}.
                   </span>
                   {finding}
@@ -219,12 +188,7 @@ export default async function ResearchDetailPage({
 
       {/* Abstract */}
       {item.abstract && (
-        <div
-          style={{
-            padding: 'clamp(32px, 4vw, 56px) clamp(20px, 4vw, 48px)',
-            borderBottom: '1px solid var(--color-border)',
-          }}
-        >
+        <div style={{ padding: 'clamp(32px, 4vw, 56px) clamp(20px, 4vw, 48px)', borderBottom: '1px solid var(--color-border)' }}>
           <div style={{ maxWidth: 'var(--space-content-max)', margin: '0 auto' }}>
             <p
               style={{
@@ -239,15 +203,7 @@ export default async function ResearchDetailPage({
             >
               Abstract
             </p>
-            <p
-              style={{
-                fontSize: '17px',
-                fontFamily: 'var(--font-base)',
-                color: 'var(--color-text)',
-                lineHeight: 1.8,
-                margin: 0,
-              }}
-            >
+            <p style={{ fontSize: '17px', fontFamily: 'var(--font-base)', color: 'var(--color-text)', lineHeight: 1.8, margin: 0 }}>
               {item.abstract}
             </p>
           </div>
@@ -256,15 +212,8 @@ export default async function ResearchDetailPage({
 
       {/* Body */}
       {item.body && (
-        <div
-          style={{
-            padding: 'clamp(32px, 4vw, 56px) clamp(20px, 4vw, 48px)',
-          }}
-        >
-          <div
-            style={{ maxWidth: 'var(--space-content-max)', margin: '0 auto' }}
-            className="prose"
-          >
+        <div style={{ padding: 'clamp(32px, 4vw, 56px) clamp(20px, 4vw, 48px)' }}>
+          <div style={{ maxWidth: 'var(--space-content-max)', margin: '0 auto' }} className="prose">
             <PortableText value={item.body as Parameters<typeof PortableText>[0]['value']} />
           </div>
         </div>
@@ -293,13 +242,7 @@ export default async function ResearchDetailPage({
             >
               Related Research
             </p>
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-                gap: '16px',
-              }}
-            >
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '16px' }}>
               {related.map((r) => (
                 <ResearchCard key={r._id} item={r} />
               ))}

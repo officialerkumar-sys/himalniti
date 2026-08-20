@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { client } from '@/lib/sanity/client'
+import { sanityFetch } from '@/lib/sanity/client'
 import { projectBySlugQuery } from '@/lib/sanity/queries/projects'
 import ResearchCard from '@/components/ResearchCard'
 import type { ProjectDetail } from '@/lib/types'
@@ -13,28 +13,16 @@ const STATUS_STYLES: Record<string, { label: string; color: string; bg: string }
   forthcoming: { label: 'Forthcoming', color: 'var(--color-accent)', bg: '#F5EDD8' },
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ slug: string }>
-}): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params
-  const item = await client.fetch<ProjectDetail | null>(projectBySlugQuery, { slug })
+  const item = await sanityFetch<ProjectDetail | null>(projectBySlugQuery, { slug })
   if (!item) return { title: 'Not Found' }
   return { title: item.title, description: item.summary }
 }
 
-export default async function ProjectDetailPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>
-}) {
+export default async function ProjectDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
-  const item = await client.fetch<ProjectDetail | null>(
-    projectBySlugQuery,
-    { slug },
-    { cache: 'no-store' }
-  )
+  const item = await sanityFetch<ProjectDetail | null>(projectBySlugQuery, { slug }, { cache: 'no-store' })
 
   if (!item) notFound()
 
@@ -42,7 +30,6 @@ export default async function ProjectDetailPage({
 
   return (
     <div style={{ backgroundColor: 'var(--color-bg)' }}>
-      {/* Header */}
       <div
         style={{
           borderBottom: '1px solid var(--color-border)',
@@ -52,15 +39,7 @@ export default async function ProjectDetailPage({
         <div style={{ maxWidth: 'var(--space-content-max)', margin: '0 auto' }}>
           <Link
             href="/projects"
-            style={{
-              fontSize: '13px',
-              color: 'var(--color-text-muted)',
-              textDecoration: 'none',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '6px',
-              marginBottom: '24px',
-            }}
+            style={{ fontSize: '13px', color: 'var(--color-text-muted)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '6px', marginBottom: '24px' }}
           >
             ← Projects
           </Link>
@@ -101,7 +80,6 @@ export default async function ProjectDetailPage({
             {item.title}
           </h1>
 
-          {/* Meta grid */}
           <div
             style={{
               display: 'grid',
@@ -115,54 +93,30 @@ export default async function ProjectDetailPage({
           >
             {item.startDate && (
               <div>
-                <p style={{ fontSize: '11px', color: 'var(--color-text-muted)', letterSpacing: '0.08em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '4px' }}>
-                  Start
-                </p>
-                <p style={{ fontSize: '14px', color: 'var(--color-text)', fontWeight: 500 }}>
-                  {item.startDate}
-                </p>
+                <p style={{ fontSize: '11px', color: 'var(--color-text-muted)', letterSpacing: '0.08em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '4px' }}>Start</p>
+                <p style={{ fontSize: '14px', color: 'var(--color-text)', fontWeight: 500 }}>{item.startDate}</p>
               </div>
             )}
             {item.endDate && (
               <div>
-                <p style={{ fontSize: '11px', color: 'var(--color-text-muted)', letterSpacing: '0.08em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '4px' }}>
-                  End
-                </p>
-                <p style={{ fontSize: '14px', color: 'var(--color-text)', fontWeight: 500 }}>
-                  {item.endDate}
-                </p>
+                <p style={{ fontSize: '11px', color: 'var(--color-text-muted)', letterSpacing: '0.08em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '4px' }}>End</p>
+                <p style={{ fontSize: '14px', color: 'var(--color-text)', fontWeight: 500 }}>{item.endDate}</p>
               </div>
             )}
             {item.partners && item.partners.length > 0 && (
               <div>
-                <p style={{ fontSize: '11px', color: 'var(--color-text-muted)', letterSpacing: '0.08em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '4px' }}>
-                  Partners
-                </p>
-                <p style={{ fontSize: '14px', color: 'var(--color-text)', lineHeight: 1.5 }}>
-                  {item.partners.join(', ')}
-                </p>
+                <p style={{ fontSize: '11px', color: 'var(--color-text-muted)', letterSpacing: '0.08em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '4px' }}>Partners</p>
+                <p style={{ fontSize: '14px', color: 'var(--color-text)', lineHeight: 1.5 }}>{item.partners.join(', ')}</p>
               </div>
             )}
           </div>
         </div>
       </div>
 
-      {/* Summary + body */}
-      <div
-        style={{ padding: 'clamp(32px, 4vw, 56px) clamp(20px, 4vw, 48px)' }}
-      >
+      <div style={{ padding: 'clamp(32px, 4vw, 56px) clamp(20px, 4vw, 48px)' }}>
         <div style={{ maxWidth: 'var(--space-content-max)', margin: '0 auto' }}>
           {item.summary && (
-            <p
-              style={{
-                fontSize: '19px',
-                fontFamily: 'var(--font-base)',
-                color: 'var(--color-text)',
-                lineHeight: 1.7,
-                marginBottom: '32px',
-                fontWeight: 400,
-              }}
-            >
+            <p style={{ fontSize: '19px', fontFamily: 'var(--font-base)', color: 'var(--color-text)', lineHeight: 1.7, marginBottom: '32px', fontWeight: 400 }}>
               {item.summary}
             </p>
           )}
@@ -174,7 +128,6 @@ export default async function ProjectDetailPage({
         </div>
       </div>
 
-      {/* Research outputs */}
       {item.outputs && item.outputs.length > 0 && (
         <div
           style={{
@@ -197,13 +150,7 @@ export default async function ProjectDetailPage({
             >
               Research Outputs
             </p>
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-                gap: '16px',
-              }}
-            >
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '16px' }}>
               {item.outputs.map((r) => (
                 <ResearchCard key={r._id} item={r} />
               ))}

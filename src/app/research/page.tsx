@@ -1,16 +1,17 @@
-import { client } from '@/lib/sanity/client'
+import { sanityFetch } from '@/lib/sanity/client'
 import { allResearchQuery } from '@/lib/sanity/queries/research'
 import { regionsQuery } from '@/lib/sanity/queries/settings'
 import ResearchCard from '@/components/ResearchCard'
 import type { ResearchCard as ResearchCardType, HimalayaRegion } from '@/lib/types'
 import ResearchFilters from './ResearchFilters'
 
+export const dynamic = 'force-dynamic'
 export const metadata = { title: 'Research' }
 
 async function getData() {
   const [research, regions] = await Promise.all([
-    client.fetch<ResearchCardType[]>(allResearchQuery, {}, { cache: 'no-store' }),
-    client.fetch<HimalayaRegion[]>(regionsQuery, {}, { next: { revalidate: 3600 } }),
+    sanityFetch<ResearchCardType[]>(allResearchQuery, {}, { cache: 'no-store' }),
+    sanityFetch<HimalayaRegion[]>(regionsQuery, {}, { next: { revalidate: 3600 } }),
   ])
   return { research: research ?? [], regions: regions ?? [] }
 }
@@ -46,7 +47,6 @@ export default async function ResearchPage({
 
   return (
     <div style={{ backgroundColor: 'var(--color-bg)', minHeight: '100vh' }}>
-      {/* Page header */}
       <div
         style={{
           borderBottom: '1px solid var(--color-border)',
@@ -91,7 +91,6 @@ export default async function ResearchPage({
         </div>
       </div>
 
-      {/* Results */}
       <div
         style={{
           maxWidth: 'var(--space-wide-max)',

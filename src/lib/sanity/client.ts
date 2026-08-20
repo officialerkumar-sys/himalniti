@@ -1,8 +1,11 @@
 import { createClient } from 'next-sanity'
 
+const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID
+const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET ?? 'production'
+
 export const client = createClient({
-  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
-  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET ?? 'production',
+  projectId: projectId ?? 'placeholder',
+  dataset,
   apiVersion: '2024-01-01',
   useCdn: process.env.NODE_ENV === 'production',
 })
@@ -16,6 +19,11 @@ export async function sanityFetch<T>(
   params: Record<string, unknown> = {},
   cacheOptions: CacheOptions = { next: { revalidate: 3600 } }
 ): Promise<T> {
+  if (!projectId) {
+    console.warn('NEXT_PUBLIC_SANITY_PROJECT_ID is not set — returning empty data')
+    return (Array.isArray([] as unknown as T) ? [] : null) as T
+  }
+
   const fetchOptions = 'cache' in cacheOptions && cacheOptions.cache
     ? { cache: cacheOptions.cache }
     : { next: (cacheOptions as { next: { revalidate?: number | false } }).next }

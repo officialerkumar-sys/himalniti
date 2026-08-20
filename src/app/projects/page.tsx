@@ -1,9 +1,10 @@
 import Link from 'next/link'
-import { client } from '@/lib/sanity/client'
+import { sanityFetch } from '@/lib/sanity/client'
 import { allProjectsQuery } from '@/lib/sanity/queries/projects'
 import ProjectCard from '@/components/ProjectCard'
 import type { ProjectCard as ProjectCardType } from '@/lib/types'
 
+export const dynamic = 'force-dynamic'
 export const metadata = { title: 'Projects' }
 
 const STATUS_FILTERS = [
@@ -15,7 +16,7 @@ const STATUS_FILTERS = [
 
 async function getProjects(): Promise<ProjectCardType[]> {
   try {
-    return await client.fetch(allProjectsQuery, {}, { cache: 'no-store' })
+    return await sanityFetch<ProjectCardType[]>(allProjectsQuery, {}, { cache: 'no-store' })
   } catch {
     return []
   }
@@ -68,7 +69,6 @@ export default async function ProjectsPage({
             Projects
           </h1>
 
-          {/* Status filter */}
           <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', paddingBottom: '24px' }}>
             {STATUS_FILTERS.map((f) => (
               <Link
@@ -85,12 +85,9 @@ export default async function ProjectsPage({
                   fontFamily: 'var(--font-base)',
                   textDecoration: 'none',
                   backgroundColor:
-                    (params.status ?? '') === f.value
-                      ? 'var(--color-dark)'
-                      : 'var(--color-bg)',
+                    (params.status ?? '') === f.value ? 'var(--color-dark)' : 'var(--color-bg)',
                   color:
                     (params.status ?? '') === f.value ? '#fff' : 'var(--color-text-muted)',
-                  transition: 'all var(--transition-base)',
                 }}
               >
                 {f.label}
@@ -100,36 +97,15 @@ export default async function ProjectsPage({
         </div>
       </div>
 
-      <div
-        style={{
-          maxWidth: 'var(--space-wide-max)',
-          margin: '0 auto',
-          padding: '40px clamp(20px, 4vw, 48px)',
-        }}
-      >
-        <p
-          style={{
-            fontSize: '13px',
-            color: 'var(--color-text-muted)',
-            marginBottom: '24px',
-            fontFamily: 'var(--font-base)',
-          }}
-        >
+      <div style={{ maxWidth: 'var(--space-wide-max)', margin: '0 auto', padding: '40px clamp(20px, 4vw, 48px)' }}>
+        <p style={{ fontSize: '13px', color: 'var(--color-text-muted)', marginBottom: '24px', fontFamily: 'var(--font-base)' }}>
           {filtered.length} project{filtered.length !== 1 ? 's' : ''}
         </p>
 
         {filtered.length === 0 ? (
-          <p style={{ fontSize: '17px', color: 'var(--color-text-muted)' }}>
-            No projects found.
-          </p>
+          <p style={{ fontSize: '17px', color: 'var(--color-text-muted)' }}>No projects found.</p>
         ) : (
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-              gap: '24px',
-            }}
-          >
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '24px' }}>
             {filtered.map((item) => (
               <ProjectCard key={item._id} item={item} />
             ))}

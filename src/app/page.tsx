@@ -1,14 +1,16 @@
 import Link from 'next/link'
-import { client } from '@/lib/sanity/client'
+import { sanityFetch } from '@/lib/sanity/client'
 import { siteSettingsQuery } from '@/lib/sanity/queries/settings'
 import StatPanel from '@/components/StatPanel'
 import ResearchCard from '@/components/ResearchCard'
 import ProjectCard from '@/components/ProjectCard'
 import type { SiteSettings } from '@/lib/types'
 
+export const revalidate = 3600
+
 async function getSettings(): Promise<SiteSettings | null> {
   try {
-    return await client.fetch(siteSettingsQuery, {}, { next: { revalidate: 3600 } })
+    return await sanityFetch<SiteSettings>(siteSettingsQuery)
   } catch {
     return null
   }
@@ -94,7 +96,6 @@ export default async function HomePage() {
                 letterSpacing: '0.04em',
                 textDecoration: 'none',
                 borderRadius: 'var(--radius-card)',
-                transition: 'background-color var(--transition-base)',
               }}
             >
               Explore Research
@@ -113,7 +114,6 @@ export default async function HomePage() {
                 fontWeight: 500,
                 textDecoration: 'none',
                 borderRadius: 'var(--radius-card)',
-                transition: 'border-color var(--transition-base)',
               }}
             >
               Get Involved
@@ -197,7 +197,7 @@ export default async function HomePage() {
           >
             Tourism is the primary economic driver of the Indian Himalaya — and its primary ecological threat.
           </h2>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '32px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '32px' }}>
             <p style={{ fontSize: '17px', color: 'var(--color-text-muted)', lineHeight: 1.8, margin: 0 }}>
               Annual visitor volumes to mountain districts have grown faster than the infrastructure or governance
               frameworks designed to absorb them. The result is concentrated economic benefit at the trailhead,

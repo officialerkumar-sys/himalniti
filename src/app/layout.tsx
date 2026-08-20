@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import './globals.css'
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
-import { client } from '@/lib/sanity/client'
+import { sanityFetch } from '@/lib/sanity/client'
 import { siteSettingsQuery } from '@/lib/sanity/queries/settings'
 import type { SiteSettings } from '@/lib/types'
 
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 
 async function getSettings(): Promise<SiteSettings | null> {
   try {
-    return await client.fetch(siteSettingsQuery, {}, { next: { revalidate: 3600 } })
+    return await sanityFetch<SiteSettings>(siteSettingsQuery, {}, { next: { revalidate: 3600 } })
   } catch {
     return null
   }
@@ -28,6 +28,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   return (
     <html lang="en">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+      </head>
       <body style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         <Nav />
         <main style={{ flex: 1, paddingTop: '60px' }}>{children}</main>
