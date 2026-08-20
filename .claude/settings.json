@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "additionalDirectories": [
+      "d:\\000_CLAUDE PROJECT\\34_himalniti\\src\\app\\studio\\[[...tool]]"
+    ],
+    "allow": [
+      "Bash(echo \"\" > \"d:/000_CLAUDE PROJECT/34_himalniti/src/app/studio/[[...tool]]/page.tsx\")"
+    ]
+  }
+}
