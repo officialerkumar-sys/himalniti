@@ -1,10 +1,13 @@
 {
   "permissions": {
+    "allow": [
+      "Bash(echo \"\" > \"d:/000_CLAUDE PROJECT/34_himalniti/src/app/studio/[[...tool]]/page.tsx\")",
+      "PowerShell(cd \"d:\\\\000_CLAUDE PROJECT\\\\34_himalniti\"; Start-Process \"npm\" -ArgumentList \"run dev\" -WindowStyle Hidden; Start-Sleep -Seconds 12; try { $r = Invoke-WebRequest -Uri \"http://localhost:3000/studio\" -TimeoutSec 10 -UseBasicParsing; Write-Output \"Status: $\\($r.StatusCode\\)\" } catch { Write-Output \"Error: $\\($_.Exception.Message\\)\" })",
+      "PowerShell(netstat -ano)",
+      "PowerShell(try { $r = Invoke-WebRequest -Uri \"http://localhost:3000/studio\" -TimeoutSec 15 -UseBasicParsing; Write-Output \"HTTP $\\($r.StatusCode\\) — studio route responding\"; Write-Output \\($r.Content | Select-String \"NextStudio|sanity|studio\" | Select-Object -First 2\\) } catch { Write-Output \"Error: $\\($_.Exception.Message\\)\" })"
+    ],
     "additionalDirectories": [
       "d:\\000_CLAUDE PROJECT\\34_himalniti\\src\\app\\studio\\[[...tool]]"
-    ],
-    "allow": [
-      "Bash(echo \"\" > \"d:/000_CLAUDE PROJECT/34_himalniti/src/app/studio/[[...tool]]/page.tsx\")"
     ]
   }
 }
