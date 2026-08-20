@@ -1,0 +1,26 @@
+:root {
+  --color-bg:           #F5F3EE;
+  --color-bg-alt:       #ECEAE4;
+  --color-dark:         #1A1D23;
+  --color-navy:         #2B3140;
+  --color-text:         #2A2D33;
+  --color-text-muted:   #748090;
+  --color-accent:       #B89048;
+  --color-accent-hover: #D4AA64;
+  --color-green:        #3D6B50;
+  --color-green-light:  #EBF2ED;
+  --color-border:       #D8D4CB;
+
+  --font-base:          'Inter', sans-serif;
+  --font-size-body:     17px;
+  --font-size-caption:  11px;
+  --font-size-nav:      13px;
+  --font-size-display:  clamp(28px, 5vw, 56px);
+  --line-height-body:   1.8;
+
+  --space-section:      clamp(56px, 9vw, 112px);
+  --space-content-max:  760px;
+  --space-wide-max:     1100px;
+  --radius-card:        4px;
+  --transition-base:    250ms ease-out;
+}

@@ -1,0 +1,64 @@
+@import "tailwindcss";
+@import '../styles/tokens.css';
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-base);
+  font-size: var(--font-size-body);
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  line-height: var(--line-height-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  color: inherit;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-base);
+  line-height: 1.2;
+  color: var(--color-text);
+}
+
+.prose p {
+  margin-bottom: 1.4em;
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
+  color: var(--color-text);
+}
+
+.prose h2 {
+  font-size: 22px;
+  font-weight: 600;
+  margin: 2em 0 0.8em;
+}
+
+.prose h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 1.6em 0 0.6em;
+}
+
+.prose ul {
+  padding-left: 1.5em;
+  margin-bottom: 1.4em;
+}
+
+.prose li {
+  margin-bottom: 0.5em;
+}
